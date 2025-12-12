@@ -14,6 +14,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+    Route::get('costos', function () {
+        return Inertia::render('costos');
+    })->name('costos');
+    Route::get('presupuestos', function () {
+        return Inertia::render('presupuestos');
+    })->name('presupuestos');
+
+
 });
 
 require __DIR__.'/settings.php';
