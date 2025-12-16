@@ -59,7 +59,7 @@ const SectionHeader: React.FC<{
   <button
     type="button"
     onClick={() => toggleSection(section)}
-    className="w-full bg-emerald-600 text-white px-6 py-4 flex justify-between items-center rounded-t-xl shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+    className="w-full bg-green-500 text-white px-6 py-4 flex justify-between items-center rounded-t-xl shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-300"
   >
     <h3 className="font-bold text-sm uppercase tracking-wider">{title}</h3>
     {expandedSections[section] ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -79,7 +79,7 @@ const InputField: React.FC<{
       type={type}
       value={value}
       onChange={(e) => onChange(field, e.target.value)}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow shadow-sm hover:shadow"
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-shadow shadow-sm hover:shadow"
     />
   </div>
 );
@@ -87,11 +87,40 @@ const InputField: React.FC<{
 const LabelField: React.FC<{ label: string; value: string }> = ({ label, value }) => (
   <div className="mb-4">
     <label className="block text-sm font-semibold text-gray-700 mb-2">{label}</label>
-    <div className="w-full px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-gray-900 font-medium shadow-inner">
+    <div className="w-full px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-gray-900 font-medium shadow-inner">
       {value}
     </div>
   </div>
 );
+
+
+
+const SelectField: React.FC<{  
+  label: string; 
+  value: string; 
+  field: keyof FormData; 
+  options: { value: string; label: string }[];
+  onChange: (field: keyof FormData, value: string) => void;
+}> = ({ label , value, field, options, onChange }) => (
+  <div className="mb-4">
+    <label htmlFor={field} className="block text-sm font-semibold text-gray-700 mb-2">
+      {label}
+    </label>
+    <select
+      id={field}
+      value={value}
+      onChange={(e) => onChange(field, e.target.value)}
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-shadow shadow-sm hover:shadow"
+    >
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
 
 // MAIN COMPONENT
 export default function OrdenCompraForm() {
@@ -163,17 +192,47 @@ export default function OrdenCompraForm() {
               {expandedSections.general && (
                 <div className="p-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Moneda" value={formData.moneda} field="moneda" onChange={handleChange} />
+                  <div className="mb-4">
+                    <SelectField
+                      label="Moneda"
+                      value={formData.moneda}
+                      field="moneda"
+                      options={[
+                        { value: 'SOLES', label: 'SOLES' },
+                        { value: 'DOLARES', label: 'DOLARES' }
+                      ]}
+                      onChange={handleChange}
+                    />
+                  </div>
                     <InputField label="Importe" value={formData.importe} field="importe" onChange={handleChange} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <LabelField label="Fecha Emisión" value={formData.fechaEmision} />
-                    <LabelField label="Identificador" value={formData.identificador} />
+                    <InputField label="Identificador" value={formData.identificador} field="identificador" onChange={handleChange} />
                   </div>
-                  <InputField label="Categoría de Compra" value={formData.categoriaCompra} field="categoriaCompra" onChange={handleChange} />
+                  <SelectField
+                    label="Categoría de Compra"
+                    value={formData.categoriaCompra}
+                    field="categoriaCompra"
+                    options={[
+                      { value: 'EMERGENCIA', label: 'EMERGENCIA' },
+                      { value: 'REGULAR', label: 'REGULAR' },
+                      { value: 'ESTRENO', label: 'ESTRENO' }
+                    ]}
+                    onChange={handleChange}
+                  />
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Proveedor" value={formData.proveedor} field="proveedor" onChange={handleChange} />
-                    <InputField label="Cód. Proveedor" value={formData.codProveedor} field="codProveedor" onChange={handleChange} />
+                    {formData.categoriaCompra === 'EMERGENCIA' ? (
+                      <>
+                        <InputField label="Proveedor" value={formData.proveedor} field="proveedor" onChange={handleChange} />
+                        <InputField label="Cód. Proveedor" value={formData.codProveedor} field="codProveedor" onChange={handleChange} />
+                      </>
+                    ) : (
+                      <>
+                        <LabelField label="Proveedor" value={formData.proveedor} />
+                        <LabelField label="Cód. Proveedor" value={formData.codProveedor} />
+                      </>
+                    )}
                   </div>
                   <InputField label="Descripción de Compra" value={formData.descripcionCompra} field="descripcionCompra" onChange={handleChange} />
                 </div>
@@ -190,10 +249,10 @@ export default function OrdenCompraForm() {
               />
               {expandedSections.solicitante && (
                 <div className="p-6">
-                  <InputField label="Área Solicitante" value={formData.areaSolicitante} field="areaSolicitante" onChange={handleChange} />
+                  <LabelField label="Área Solicitante" value={formData.areaSolicitante}  />
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Nombre" value={formData.nombre} field="nombre" onChange={handleChange} />
-                    <InputField label="Apellido" value={formData.apellido} field="apellido" onChange={handleChange} />
+                    <LabelField label="Nombre" value={formData.nombre}  />
+                    <LabelField label="Apellido" value={formData.apellido}  />
                   </div>
                 </div>
               )}
@@ -209,7 +268,7 @@ export default function OrdenCompraForm() {
               />
               {expandedSections.articulo && (
                 <div className="p-6">
-                  <InputField label="Código de Artículo (1001_)" value={formData.codigoArticulo} field="codigoArticulo" onChange={handleChange} />
+                  <InputField label="Código de Artículo" value={formData.codigoArticulo} field="codigoArticulo" onChange={handleChange} />
                   <InputField label="Descripción Artículo" value={formData.descArticulo} field="descArticulo" onChange={handleChange} />
                   <div className="grid grid-cols-2 gap-4">
                     <InputField label="Familia Material" value={formData.familiaMaterial} field="familiaMaterial" onChange={handleChange} />
@@ -240,7 +299,7 @@ export default function OrdenCompraForm() {
             <div className="flex gap-4">
               <button
                 onClick={handleSave}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
+                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
               >
                 <Save size={20} />
                 Guardar Orden
@@ -261,15 +320,15 @@ export default function OrdenCompraForm() {
 
             {savedData ? (
               <div className="space-y-6">
-                <div className="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded">
-                  <p className="text-sm text-emerald-800 font-semibold">
+                <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                  <p className="text-sm text-green-800 font-semibold">
                     Guardado el: {savedData.fechaGuardado}
                   </p>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-bold text-emerald-700 mb-3 text-sm uppercase tracking-wide">Información General</h3>
+                    <h3 className="font-bold text-green-600 mb-3 text-sm uppercase tracking-wide">Información General</h3>
                     <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div><span className="font-semibold text-gray-700">Moneda:</span> <span className="text-gray-900">{savedData.moneda}</span></div>
@@ -281,7 +340,7 @@ export default function OrdenCompraForm() {
                       </div>
                       <div className="text-sm">
                         <span className="font-semibold text-gray-700">Categoría:</span>
-                        <span className="ml-2 bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs font-medium">
+                        <span className="ml-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">
                           {savedData.categoriaCompra}
                         </span>
                       </div>
@@ -289,7 +348,7 @@ export default function OrdenCompraForm() {
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="font-bold text-emerald-700 mb-3 text-sm uppercase tracking-wide">Proveedor</h3>
+                    <h3 className="font-bold text-green-600 mb-3 text-sm uppercase tracking-wide">Proveedor</h3>
                     <div className="text-sm space-y-1">
                       <p><span className="font-semibold text-gray-700">Nombre:</span> <span className="text-gray-900">{savedData.proveedor}</span></p>
                       <p><span className="font-semibold text-gray-700">Código:</span> <span className="text-gray-900">{savedData.codProveedor}</span></p>
@@ -297,7 +356,7 @@ export default function OrdenCompraForm() {
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="font-bold text-emerald-700 mb-3 text-sm uppercase tracking-wide">Solicitante</h3>
+                    <h3 className="font-bold text-green-600 mb-3 text-sm uppercase tracking-wide">Solicitante</h3>
                     <div className="text-sm space-y-1">
                       <p><span className="font-semibold text-gray-700">Área:</span> <span className="text-gray-900">{savedData.areaSolicitante}</span></p>
                       <p><span className="font-semibold text-gray-700">Nombre:</span> <span className="text-gray-900">{savedData.nombre} {savedData.apellido}</span></p>
@@ -305,12 +364,12 @@ export default function OrdenCompraForm() {
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="font-bold text-emerald-700 mb-3 text-sm uppercase tracking-wide">Descripción</h3>
+                    <h3 className="font-bold text-green-600 mb-3 text-sm uppercase tracking-wide">Descripción</h3>
                     <p className="text-sm text-gray-900">{savedData.descripcionCompra}</p>
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="font-bold text-emerald-700 mb-3 text-sm uppercase tracking-wide">Artículo</h3>
+                    <h3 className="font-bold text-green-600 mb-3 text-sm uppercase tracking-wide">Artículo</h3>
                     <div className="text-sm space-y-1">
                       <p><span className="font-semibold text-gray-700">Código (1001_):</span> <span className="text-gray-900">{savedData.codigoArticulo}</span></p>
                       <p><span className="font-semibold text-gray-700">Descripción:</span> <span className="text-gray-900">{savedData.descArticulo}</span></p>
@@ -320,7 +379,7 @@ export default function OrdenCompraForm() {
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="font-bold text-emerald-700 mb-3 text-sm uppercase tracking-wide">Datos Contables</h3>
+                    <h3 className="font-bold text-green-600 mb-3 text-sm uppercase tracking-wide">Datos Contables</h3>
                     <div className="text-sm space-y-1">
                       <p><span className="font-semibold text-gray-700">Gerencia:</span> <span className="text-gray-900">{savedData.gerencia}</span></p>
                       <p><span className="font-semibold text-gray-700">Centro Costo:</span> <span className="text-gray-900">{savedData.centroCosto}</span></p>
@@ -328,7 +387,7 @@ export default function OrdenCompraForm() {
                       <p>
                         <span className="font-semibold text-gray-700">Presupuesto:</span>
                         <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
-                          savedData.presupuesto === 'ACEPTADO' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                          savedData.presupuesto === 'ACEPTADO' ? 'bg-green-100 text-green-800' : 'bg-rose-100 text-rose-800'
                         }`}>
                           {savedData.presupuesto}
                         </span>
