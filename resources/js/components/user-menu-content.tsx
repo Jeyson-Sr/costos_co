@@ -32,7 +32,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                 </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                     <Link
                         className="block w-full"
@@ -45,8 +45,8 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         Settings
                     </Link>
                 </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            </DropdownMenuGroup> */}
+            {/* <DropdownMenuSeparator /> */}
             <DropdownMenuItem asChild>
                 <Link
                     className="block w-full"

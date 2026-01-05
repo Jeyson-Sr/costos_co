@@ -58,7 +58,7 @@ export default function Login(
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password" className="text-green-800">Contraseña</Label>
-                                    {canResetPassword && (
+                                    {/* {canResetPassword && (
                                         <TextLink
                                             href={request()}
                                             className="ml-auto text-sm text-green-700 hover:text-green-900"
@@ -66,7 +66,7 @@ export default function Login(
                                         >
                                             ¿Olvidaste tu contraseña?
                                         </TextLink>
-                                    )}
+                                    )} */}
                                 </div>
                                 <Input
                                     id="password"
