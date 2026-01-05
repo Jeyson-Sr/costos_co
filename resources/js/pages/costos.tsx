@@ -1,6 +1,5 @@
-import OrdenCompraForm from '../features/costos/components/costos';
+import OrdenCompraForm from '../features/costos/OrdenCompraForm';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
