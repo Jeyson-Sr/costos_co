@@ -39,6 +39,7 @@ export const useOrdenCompra = () => {
   const [partidasData, setPartidasData] = useState<PartidaPresupuestal[]>([]);
   const [articulosData, setArticulosData] = useState<any[]>([]);
   const [categoriasData, setCategoriasData] = useState<any[]>([]);
+  const [proveedorsData, setProveedorsData] = useState<any[]>([]);
 
   // --- EFECTOS ---
   useEffect(() => {
@@ -55,6 +56,10 @@ export const useOrdenCompra = () => {
               const responseCategorias = await fetch('categorias');
               const dataCategorias = await responseCategorias.json();
               setCategoriasData(dataCategorias);
+
+              const responseProveedors = await fetch('proveedors');
+              const dataProveedors = await responseProveedors.json();
+              setProveedorsData(dataProveedors);
             } catch (error) {
               console.error("Error cargando partidas y / o  artículos:", error);
           }
@@ -92,6 +97,7 @@ export const useOrdenCompra = () => {
     partidasData,
     articulosData,
     categoriasData,
+    proveedorsData,
     toggleSection,
     handleChange,
     handleSave,

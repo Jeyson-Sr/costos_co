@@ -7,6 +7,7 @@ use App\Models\CategoriaCompra;
 use App\Models\CentroCosto;
 use App\Models\CuentaContable;
 use App\Models\Gerencia;
+use App\Models\Proveedor;
 
 
 class CostosController extends Controller
@@ -70,5 +71,21 @@ class CostosController extends Controller
 
         return response()->json($categorias);
 
+    }
+
+
+        public function getProveedors()
+    {
+        $data = Proveedor::get();
+
+        $proveedors = $data->map(function ($proveedor) {
+            return [
+                'id' => $proveedor->id,
+                'codProveedor' => $proveedor->cod_proveedors,
+                'descProveedor' => $proveedor->desc_proveedor,
+            ];
+        });
+
+        return response()->json($proveedors);
     }
 }

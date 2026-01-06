@@ -34,6 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/categorias', [CostosController::class, 'getCategorias'])
         ->name('categorias');
+        
+    Route::get('/proveedors', [CostosController::class, 'getProveedors'])
+        ->name('proveedors');
 });
 
 require __DIR__.'/settings.php';

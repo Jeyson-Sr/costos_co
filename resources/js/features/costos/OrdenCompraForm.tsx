@@ -23,6 +23,7 @@ export default function OrdenCompraForm() {
     partidasData,
     articulosData,
     categoriasData,
+    proveedorsData,
     toggleSection,
     handleChange,
     handleSave,
@@ -100,7 +101,25 @@ export default function OrdenCompraForm() {
                   <div className="grid grid-cols-2 gap-4">
                     {formData.categoriaCompra === 'EMERGENCIA' ? (
                       <>
-                        <InputField label="Proveedor" value={formData.proveedor} field="proveedor" onChange={handleChange} />
+                      <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Proveedor</label>   
+                            <select
+                            value={formData.proveedor}
+                            onChange={(e) => {
+                                const selected = proveedorsData.find((p: any) => p.descProveedor === e.target.value);
+                                handleChange("proveedor", e.target.value);
+                                handleChange("codProveedor", selected?.codProveedor || "");
+                            }}
+                            className="h-12 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                            >
+                            <option value="">Seleccione proveedor...</option>
+                            {proveedorsData.map((p: any) => (
+                                <option key={p.codProveedor} value={p.descProveedor}>
+                                {p.descProveedor}
+                                </option>
+                            ))}
+                            </select>
+                        </div>
                         <InputField label="Cód. Proveedor" value={formData.codProveedor} field="codProveedor" onChange={handleChange} />
                       </>
                     ) : (
