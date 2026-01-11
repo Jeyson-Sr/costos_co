@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Articulo;
 use App\Models\CategoriaCompra;
 use App\Models\CentroCosto;
@@ -12,6 +15,14 @@ use App\Models\Proveedor;
 
 class CostosController extends Controller
 {
+
+
+
+    /**
+     * --------------------------------------------------------------------------
+     * GET endpoint route 
+     * --------------------------------------------------------------------------
+     */
         public function getPartidasPresupuestales()
     {
         $data = Gerencia::with(['centrosCosto.cuentas'])->get();
@@ -88,4 +99,40 @@ class CostosController extends Controller
 
         return response()->json($proveedors);
     }
+
+
+
+    public function getCuentaContables()
+    {
+        $data = CuentaContable::get();
+        
+
+        $cuentasContables = $data->map(function ($cuentaContable) {
+            return [
+                'id' => $cuentaContable->id,
+                'ccontable' => $cuentaContable->ccontable,
+                'desc_contable' => $cuentaContable->desc_contable,
+                'partida' => $cuentaContable->partida,
+                'fondo' => $cuentaContable->fondo,
+            ];
+        });
+
+        return response()->json($cuentasContables);
+    }
+
+
+
+
+
+
+
+    /**
+     * --------------------------------------------------------------------------
+     * PUT endpoint route 
+     * --------------------------------------------------------------------------
+     */
+
+
+
+
 }

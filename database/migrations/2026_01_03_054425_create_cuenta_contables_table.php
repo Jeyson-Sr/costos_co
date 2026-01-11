@@ -15,7 +15,8 @@ return new class extends Migration
         $table->id();
         $table->string('ccontable'); // Ej: 6251110101
         $table->string('desc_contable');
-        $table->string('partida');   // Ej: 76
+        $table->string('partida')->unique();   // Ej: 76
+        $table->integer('fondo')->default(0); // Monto actual en la partida
         $table->foreignId('centro_costo_id')->constrained('centros_costos')->onDelete('cascade');
         $table->timestamps();
     });

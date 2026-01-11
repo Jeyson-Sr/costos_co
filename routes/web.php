@@ -15,7 +15,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('costos');
+        return Inertia::render('presupuestos');
     })->name('dashboard');
     Route::get('costos', function () {
         return Inertia::render('costos');
@@ -37,6 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
     Route::get('/proveedors', [CostosController::class, 'getProveedors'])
         ->name('proveedors');
+
+    Route::get('/cuentaContables', [CostosController::class, 'getCuentaContables'])
+        ->name('cuentaContables');
 });
 
 require __DIR__.'/settings.php';

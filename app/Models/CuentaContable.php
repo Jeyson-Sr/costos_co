@@ -22,6 +22,7 @@ class CuentaContable extends Model
         'ccontable',
         'desc_contable',
         'partida',
+        'fondo',
         'centro_costo_id',
     ];
 }
