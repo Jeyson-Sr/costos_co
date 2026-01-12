@@ -17,6 +17,22 @@ type Partida = {
   fondo: number;
 };
 
+type OrdenCompra = {
+  id: number;
+  oc: string;
+  importe: number;
+  moneda: string;
+  categoria: string;
+  proveedor: string;
+  solicitante: string;
+  descripcion: string;
+  articulo: string;
+  gerencia: string;
+  centroCosto: string;
+  partida: string;
+  presupuesto: string;
+};
+
 type Presupuesto = {
   partida: string;
   fondo: number;
@@ -573,7 +589,7 @@ function TablaGastos({ gastos }: TablaGastosProps) {
                   </button>}
                 </td>
                 <td className="px-4 py-4 text-sm text-gray-700">{g.responsable}</td>
-                <td className="px-4 py-4 text-sm font-semibold text-green-600">S/ {g.monto.toFixed(2)}</td>
+                <td className="px-4 py-4 text-sm font-semibold text-green-600">S/ {g.monto}</td>
                 <td className="px-4 py-4 text-sm text-gray-700">{g.partida}</td>
                 <td className="px-4 py-4 text-sm text-gray-700">{g.centroCosto}</td>
                 <td className="px-4 py-4 text-sm text-gray-700">{g.descripcion}</td>
@@ -595,6 +611,7 @@ function TablaGastos({ gastos }: TablaGastosProps) {
 export default function PresupuestoApp() {
     // 1. Estados principales
     const [cuentaContablesData, setCuentaContablesData] = useState<Partida[]>([]);
+    const [ordenComprasData, setOrdenComprasData] = useState<Gasto[]>([]);
   
     // 2. Cargar los datos al montar el componente
     useEffect(() => {
@@ -603,8 +620,13 @@ export default function PresupuestoApp() {
                 const responsecuentaContables = await fetch('cuentaContables');
                 const dataCuentaContables = await responsecuentaContables.json();
                 setCuentaContablesData(dataCuentaContables); // Guardamos la estructura completa
+
+                const responseOrdenCompras = await fetch('ordenCompras');
+                const dataOrdenCompras = await responseOrdenCompras.json();
+                setOrdenComprasData(dataOrdenCompras); // Guardamos la estructura completa
+                
               } catch (error) {
-                console.error("Error cargando Cuentas Contables", error);
+                console.error("Error cargando Órdenes de Compra", error);
             }
         };
         cargarDatos();
@@ -682,7 +704,7 @@ export default function PresupuestoApp() {
           />
         </div>
 
-        <TablaGastos gastos={mockGastos} />
+        <TablaGastos gastos={ordenComprasData} />
       </div>
     </div>
   );

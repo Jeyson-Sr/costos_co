@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Articulo;
 use App\Models\CategoriaCompra;
 use App\Models\CentroCosto;
+use App\Models\OrdenCompra;
 use App\Models\CuentaContable;
 use App\Models\Gerencia;
 use App\Models\Proveedor;
@@ -49,29 +50,29 @@ class CostosController extends Controller
         return response()->json($partidasPresupuestales);
     }
 
-    //     public function getArticulos()
-    // {
-    //     $data = Articulo::get();
+        public function getArticulos()
+    {
+        $data = Articulo::get();
 
-    //     $articulos = $data->map(function ($articulo) {
-    //         return [
-    //             'id' => $articulo->id,
-    //             'codigoArticulo' => $articulo->codigo_articulo,
-    //             'descArticulo' => $articulo->desc_articulo,
-    //             'familiaMaterial' => $articulo->familia_material,
-    //             'unidadMedida' => $articulo->unidad_medida,
-    //         ];
-    //     });
+        $articulos = $data->map(function ($articulo) {
+            return [
+                'id' => $articulo->id,
+                'codigoArticulo' => $articulo->codigo_articulo,
+                'descArticulo' => $articulo->desc_articulo,
+                'familiaMaterial' => $articulo->familia_material,
+                'unidadMedida' => $articulo->unidad_medida,
+            ];
+        });
 
-    //     return response()->json($articulos);
-    // }
+        return response()->json($articulos);
+    }
     
 
-    public function getArticulos()
-{
-    $articulos = Articulo::all();
-    return response()->json($articulos); // Devuelve JSON puro para que Axios lo lea
-}
+//     public function getArticuloss()
+// {
+//     $articulos = Articulo::all();
+//     return response()->json($articulos); // Devuelve JSON puro para que Axios lo lea
+// }
 
 
         public function getCategorias()
@@ -126,6 +127,28 @@ class CostosController extends Controller
         });
 
         return response()->json($cuentasContables);
+    }
+
+
+    public function getOrdenCompras()
+    {
+        $ordenCompras = OrdenCompra::all()->map(function ($oc) {
+            // Lookup the centro_costo description from CentroCosto model
+                $centroCosto = CentroCosto::where('ccosto', $oc->centroCosto)->first();
+                $desc_cc = $centroCosto ? $centroCosto->desc_cc : null;
+
+            return [
+                'id'          => $oc->idx,
+                'responsable' => $oc->solicitante,
+                'monto'       => $oc->importe,
+                'partida'     => $oc->partida,
+                'centroCosto' => $desc_cc,
+                'descripcion' => $oc->descripcion,
+                'categoria'   => $oc->categoria,
+            ];
+        });
+
+        return response()->json($ordenCompras);
     }
 
 

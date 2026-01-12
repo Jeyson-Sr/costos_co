@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/articulos', [CostosController::class, 'getArticulos'])
         ->name('articulos');
+        
 
     Route::get('/categorias', [CostosController::class, 'getCategorias'])
         ->name('categorias');
@@ -40,6 +41,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/cuentaContables', [CostosController::class, 'getCuentaContables'])
         ->name('cuentaContables');
+
+    Route::get('/ordenCompras', [CostosController::class, 'getOrdenCompras'])
+        ->name('ordenCompras');
 
     Route::put('/cuentaContables/{partida}', [CostosController::class, 'updateFondo'])
         ->name('cuentaContables.update');
