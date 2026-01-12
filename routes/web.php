@@ -40,6 +40,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/cuentaContables', [CostosController::class, 'getCuentaContables'])
         ->name('cuentaContables');
+
+    Route::put('/cuentaContables/{partida}', [CostosController::class, 'updateFondo'])
+        ->name('cuentaContables.update');
 });
 
 require __DIR__.'/settings.php';

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from 'axios';
 import { Search, DollarSign, TrendingUp, FileText, LucideIcon, AlertTriangle, X, Plus, Minus } from "lucide-react";
 
 // TYPES
@@ -40,7 +41,7 @@ type ListaPartidasProps = {
   titulo: string;
   icono: LucideIcon;
   colorBg: string;
-  onActualizarFondo: (partidaId: number, nuevoFondo: number) => void;
+  onActualizarFondo: (partidaId: string, nuevoFondo: number) => void;
 };
 
 type TablaGastosProps = {
@@ -51,7 +52,7 @@ type FondoModalProps = {
   abierto: boolean;
   partida: Partida | null;
   onCerrar: () => void;
-  onGuardar: (partidaId: number, monto: number, tipo: 'agregar' | 'quitar') => void;
+  onGuardar: (partidaId: string, monto: number, tipo: 'agregar' | 'quitar') => void;
 };
 
 
@@ -198,7 +199,7 @@ function FondoModal({ abierto, partida, onCerrar, onGuardar }: FondoModalProps) 
     const montoNum = parseFloat(monto);
     if (isNaN(montoNum) || montoNum <= 0) return;
     
-    onGuardar(partida.id, montoNum, tipo);
+    onGuardar(partida.partida, montoNum, tipo);
     setMonto("");
     onCerrar();
   };
@@ -413,8 +414,8 @@ function ListaPartidas({ partidas, titulo, icono: Icono, colorBg, onActualizarFo
     setModalFondoAbierto(true);
   };
 
-  const handleGuardarFondo = (partidaId: number, monto: number, tipo: 'agregar' | 'quitar') => {
-    const partida = partidas.find(p => p.id === partidaId);
+  const handleGuardarFondo = (partidaId: string, monto: number, tipo: 'agregar' | 'quitar') => {
+    const partida = partidas.find(p => p.partida === partidaId);
     if (!partida) return;
     
     const nuevoFondo = tipo === 'agregar' 
@@ -610,25 +611,41 @@ export default function PresupuestoApp() {
     }, []);
 
 
+    const actualizarMontoFondo = async (partida: string, nuevoFondo: number) => {
+    try {
+        // 1. Realizamos la petición PUT a la ruta dinámica
+        const response = await axios.put(`/cuentaContables/${partida}`, {
+            fondo: nuevoFondo
+        });
+
+        // 2. Si todo sale bien, puedes retornar un mensaje o el dato actualizado
+        console.log("Éxito:", response.data.message);
+        return { success: true };
+
+    } catch (error: any) {
+        // 3. Manejo de errores (validación de Laravel, etc)
+        console.error("Error al actualizar:", error.response?.data || error.message);
+        return { success: false, error: error.response?.data };
+    }
+};
+
 
   // Actualizar fondo directamente en cuentaContablesDataz
   const handleGuardarPresupuesto = (nuevo: Presupuesto) => {
-
-
     // Pendiente a concecion POST para guardar los nuevos fondos al servidor
     setCuentaContablesData(prev =>
-      prev.map(p =>
-        p.partida === nuevo.partida ? { ...p, fondo: nuevo.fondo } : p
-      )
+      prev.map(p => p.partida === nuevo.partida ? { ...p, fondo: nuevo.fondo } : p )
     );
+    actualizarMontoFondo(nuevo.partida, nuevo.fondo);
   };
 
-  const handleActualizarFondo = (partidaId: number, nuevoFondo: number) => {
+  const handleActualizarFondo = (partidaId: string, nuevoFondo: number) => {
 
     // Pendiente a concecion POST para guardar los nuevos fondos al servidor
     setCuentaContablesData(prev =>
-      prev.map(p => p.id === partidaId ? { ...p, fondo: nuevoFondo } : p)
+      prev.map(p => p.partida === partidaId ? { ...p, fondo: nuevoFondo } : p)
     );
+    actualizarMontoFondo(partidaId, nuevoFondo);
   };
 
   // Filtrar partidas por estado de fondo
