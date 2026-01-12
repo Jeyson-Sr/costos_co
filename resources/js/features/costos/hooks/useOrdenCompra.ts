@@ -40,6 +40,7 @@ export const useOrdenCompra = () => {
   const [articulosData, setArticulosData] = useState<any[]>([]);
   const [categoriasData, setCategoriasData] = useState<any[]>([]);
   const [proveedorsData, setProveedorsData] = useState<any[]>([]);
+  const [cuentaContablesData, setCuentaContablesData] = useState<any[]>([]);
 
   // --- EFECTOS ---
   useEffect(() => {
@@ -60,6 +61,11 @@ export const useOrdenCompra = () => {
               const responseProveedors = await fetch('proveedors');
               const dataProveedors = await responseProveedors.json();
               setProveedorsData(dataProveedors);
+
+              const responsecuentaContables = await fetch('cuentaContables');
+                const dataCuentaContables = await responsecuentaContables.json();
+                setCuentaContablesData(dataCuentaContables); // Guardamos la estructura completa
+
             } catch (error) {
               console.error("Error cargando partidas y / o  artículos:", error);
           }
@@ -89,6 +95,15 @@ export const useOrdenCompra = () => {
     setSavedData(null);
   };
 
+  const verificarPresupuesto = (partida: string, importe: number) => {
+    const row = cuentaContablesData.find((o: any) => o.partida === partida);
+
+    const fondo = Number(row?.fondo )|| 0;
+    const suficiente = fondo >= importe;
+    const diferencia = fondo - importe;
+    return { suficiente, diferencia };
+  };
+
   // Retornamos todo lo que la vista necesita
   return {
     formData,
@@ -98,6 +113,8 @@ export const useOrdenCompra = () => {
     articulosData,
     categoriasData,
     proveedorsData,
+    cuentaContablesData,
+    verificarPresupuesto,
     toggleSection,
     handleChange,
     handleSave,

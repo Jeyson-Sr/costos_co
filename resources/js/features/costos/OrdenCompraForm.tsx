@@ -24,6 +24,8 @@ export default function OrdenCompraForm() {
     articulosData,
     categoriasData,
     proveedorsData,
+    cuentaContablesData,
+    verificarPresupuesto,
     toggleSection,
     handleChange,
     handleSave,
@@ -41,6 +43,15 @@ export default function OrdenCompraForm() {
       label: isObj ? (c.name_categoria || c.label || "") : c
     };
   });
+
+  const handlePresupuesto = (paratida: string) => {
+
+    // Extract numeric part from partida string (e.g. "1234 - compra por fera del estado" -> "1234")
+    const partidaNumber = paratida.split(' ')[0];
+    const { suficiente, diferencia } = verificarPresupuesto(partidaNumber, Number(formData.importe));
+    console.log(partidaNumber, formData.importe, suficiente, diferencia);
+    return suficiente ? 'ACEPTADO' : 'DENEGADO';
+  };
 
 
   return (
@@ -256,7 +267,7 @@ export default function OrdenCompraForm() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <LabelPresupuesto label="Presupuesto" value={formData.presupuesto} />
+                    <LabelPresupuesto label="Presupuesto" value={handlePresupuesto(formData.partida)} />
                     <div className="mb-4">
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Cuenta Contable</label>
                       <input
