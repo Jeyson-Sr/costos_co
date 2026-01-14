@@ -49,7 +49,7 @@ export const InputField: React.FC<{
 // Label (Solo lectura)
 export const LabelField: React.FC<{ label: string; value: string }> = ({ label, value }) => (
   <div className="mb-4">
-    <label className="block text-sm font-semibold text-gray-700 mb-2">{(value ?? label) || ''}</label>
+    <label className="block text-sm font-semibold text-gray-700 mb-2">{(label ?? value) || ''}</label>
     <div
       className={`w-full px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-gray-900 font-medium shadow-inner min-h-[44px] flex items-center ${
         value ? '' : 'opacity-0 pointer-events-none'
