@@ -151,6 +151,39 @@ class CostosController extends Controller
         return response()->json($ordenCompras);
     }
 
+    /**
+     * --------------------------------------------------------------------------
+     * POST endpoint route 
+     * --------------------------------------------------------------------------
+     */
+
+    // Store a new OrdenCompra record
+    public function storeOrdenCompra(Request $request)
+    {
+        $validated = $request->validate([
+            'idx'          => 'nullable|integer',
+            'oc'           => 'nullable',
+            'importe'      => 'required|string|max:255',
+            'moneda'       => 'required|string|max:255',
+            'categoria'    => 'required|string|max:255',
+            'proveedor'    => 'nullable|string|max:255',
+            'solicitante'  => 'required|string|max:255',
+            'descripcion'  => 'required|string',
+            'articulo'     => 'required|string|max:255',
+            'gerencia'     => 'required|string|max:255',
+            'centroCosto'       => 'required|string|max:255',
+            'partida'      => 'required|string|max:255',
+            'presupuesto'  => 'required|boolean',
+        ]);
+
+        $orden = OrdenCompra::create($validated);
+
+        return response()->json([
+            'message' => 'Orden de compra creada exitosamente',
+            'data'    => $orden
+        ], 201);
+    }
+
 
 
 

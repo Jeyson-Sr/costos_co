@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('orden_compras', function (Blueprint $table) {
             $table->id();
                 $table->integer('idx')->nullable()->unique();    // <---
-                $table->integer('oc')->unique();
+                $table->integer('oc')->nullable()->unique();
                 $table->decimal('importe', 12, 2);  // <---
                 $table->string('moneda');
                 $table->string('categoria');        // <---
-                $table->string('proveedor');
+                $table->string('proveedor')->nullable();
                 $table->string('solicitante');      // <---
                 $table->text('descripcion');        // <---
                 $table->string('articulo');

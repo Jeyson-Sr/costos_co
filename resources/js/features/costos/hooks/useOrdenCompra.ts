@@ -10,8 +10,8 @@ export const useOrdenCompra = () => {
     fechaEmision: getCurrentDate(),
     identificador: '',
     categoriaCompra: '',
-    proveedor: 'FABRISEL S.A',
-    codProveedor: '40456',
+    proveedor: '',
+    codProveedor: '',
     areaSolicitante: 'MANUFACTURA',
     nombre: 'JHONNIE',
     apellido: 'ENRIQUEZ',
@@ -82,23 +82,69 @@ export const useOrdenCompra = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const sendData = () : void => {
-    console.log(formData);
-  };
 
-  const handleSave = () => {
-    // sendData();
+
+  // --- MÉTODO DE GUARDADO ---
+const handleSave = async () => {
+  // 1. UTILIDAD INTERNA: Obtener Token
+  const getXsrfToken = () => decodeURIComponent(
+    document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] || ''
+  );
+
+  // 2. TRANSFORMADOR: Limpia y prepara el objeto (Payload)
+  const preparePayload = (data: any) => ({
+    oc: null,
+    importe: String(data.importe || "0"),
+    moneda: data.moneda,
+    categoria: data.categoriaCompra,
+    proveedor: data.codProveedor || null,
+    solicitante: `${data.nombre} ${data.apellido}`,
+    descripcion: data.descripcionCompra,
+    articulo: data.codigoArticulo,
+    gerencia: data.gerencia.replace(/^\d+\s*/, ''),
+    centroCosto: data.centroCosto.match(/^\d+/)?.[0] || '',
+    partida: data.partida.match(/^\d+/)?.[0] || '',
+    presupuesto: data.presupuesto === 'ACEPTADO' ? 1 : 0,
+    idx: (data.identificador && data.identificador !== "0") ? Number(data.identificador) : null
+  });
+
+  // 3. EJECUCIÓN
+  try {
+    const payload = preparePayload(formData);
+
+    const response = await fetch('/ordenCompra', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-XSRF-TOKEN': getXsrfToken()
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Error desconocido");
+    }
+
+    alert("¡Guardado con éxito!");
     setSavedData({ ...formData, fechaGuardado: new Date().toLocaleString() });
-  };
+
+  } catch (error: any) {
+    console.error("Error detallado:", error);
+    alert("Error al guardar: " + error.message);
+  }
+};
+// --- MÉTODO DE FIN DE GUARDADO ---
   
   const handleClear = () => {
     setSavedData(null);
   };
 
   const verificarPresupuesto = (partida: string, importe: number) => {
-    console.log('Tipo de partida:', typeof partida, 'Valor:', partida);
-    console.log('Tipo de importe:', typeof importe, 'Valor:', importe);
-    // console.log('cuentaContablesData:', cuentaContablesData);
+
 
     const row = cuentaContablesData.find((o: any) => o.partida === partida);
 

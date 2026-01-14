@@ -47,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::put('/cuentaContables/{partida}', [CostosController::class, 'updateFondo'])
         ->name('cuentaContables.update');
+
+    Route::post('/ordenCompra', [CostosController::class, 'storeOrdenCompra'])
+        ->name('ordenCompra.store');
 });
 
 require __DIR__.'/settings.php';

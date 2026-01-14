@@ -249,26 +249,42 @@ export default function OrdenCompraForm() {
                     <input
                       list="partida-list"
                       value={formData.partida}
-                      onChange={(e) => handleChange("partida", e.target.value)}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        
+                        // 1. Actualizamos el valor del input normalmente
+                        handleChange("partida", newValue);
+
+                        // 2. Buscamos la cuenta contable asociada de forma manual
+                        const partidaNumber = newValue.split(' ')[0];
+                        
+                        // Buscamos dentro de tu estructura de datos
+                        const gerenciaFound = partidasData.find((g) => g.gerencia === formData.gerencia);
+                        const centroCostoFound = gerenciaFound?.centrosCosto.find((cc) => 
+                          formData.centroCosto.startsWith(cc.ccosto)
+                        );
+                        const cuentaEncontrada = centroCostoFound?.cuentas.find((c: any) => 
+                          c.partida === partidaNumber
+                        );
+
+                        // 3. Si encontramos la cuenta, la actualizamos aquí (fuera del render)
+                        if (cuentaEncontrada) {
+                          handleChange("cuentaContable", cuentaEncontrada.ccontable || '');
+                        }
+                      }}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                     />
+
                     <datalist id="partida-list">
                       {partidasData
                         .find((g) => g.gerencia === formData.gerencia)
                         ?.centrosCosto.find((cc) =>
                           formData.centroCosto.startsWith(cc.ccosto)
                         )
-                        ?.cuentas.map((c: any) => {
-                          // Extract partida number and update formData.cuentaContable
-                          const partidaNumber = formData.partida.split(' ')[0];
-                          if (c.partida === partidaNumber) {
-                            handleChange("cuentaContable", c.ccontable || '');
-                          }
-                          return (
-                            // CAMBIO 5: Key única estable
-                            <option key={c.id || c.partida} value={`${c.partida} - ${c.desc_contable}`} />
-                          );
-                        }) ?? []}
+                        ?.cuentas.map((c: any) => (
+                          /* El .map ahora es LIMPIO: solo retorna el componente <option> */
+                          <option key={c.id || c.partida} value={`${c.partida} - ${c.desc_contable}`} />
+                        )) ?? []}
                     </datalist>
                   </div>
 
