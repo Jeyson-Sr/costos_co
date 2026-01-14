@@ -27,11 +27,11 @@ const mainNavItems: NavItem[] = [
         href: '/costos',
         icon: DollarSign,
     },
-    // {
-    //     title: 'Presupuestos',
-    //     href: '/presupuestos',
-    //     icon: LayoutGrid,
-    // },
+    {
+        title: 'Presupuestos',
+        href: '/presupuestos',
+        icon: DollarSign,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
