@@ -302,7 +302,12 @@ export default function OrdenCompraForm() {
             <div className="flex gap-4">
               <button
                 onClick={handleSave}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
+                disabled={handlePresupuesto(formData.partida) !== 'ACEPTADO'}
+                className={`flex-1 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md ${
+                  handlePresupuesto(formData.partida) === 'ACEPTADO'
+                    ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
               >
                 <Ticket size={20} />
                 Generar Orden

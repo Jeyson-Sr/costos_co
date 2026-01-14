@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FormData, ExpandedSections, SavedData, PartidaPresupuestal } from '../types/ordenCompra';
 import { getCurrentDate, getRandomPresupuesto } from '../utils/formatters';
 
@@ -84,6 +85,28 @@ export const useOrdenCompra = () => {
 
 
 
+/// Actualizamos el monto de la cuenta contable si es necesario
+        const actualizarMontoFondo = async (partida: string, nuevoFondo: number) => {
+    try {
+
+    
+        // 1. Realizamos la petición PUT a la ruta dinámica
+        const response = await axios.put(`/cuentaContables/${partida}`, {
+            fondo: nuevoFondo
+        });
+
+        // 2. Si todo sale bien, puedes retornar un mensaje o el dato actualizado
+        console.log("Éxito:", response.data.message);
+        return { success: true };
+
+    } catch (error: any) {
+        // 3. Manejo de errores (validación de Laravel, etc)
+        console.error("Error al actualizar:", error.response?.data || error.message);
+        return { success: false, error: error.response?.data };
+    }
+};
+//---------------------------------------------
+
   // --- MÉTODO DE GUARDADO ---
 const handleSave = async () => {
   // 1. UTILIDAD INTERNA: Obtener Token
@@ -156,6 +179,14 @@ const handleSave = async () => {
     const fondo = Number(row?.fondo) || 0;
     const suficiente = fondo >= importe;
     const diferencia = fondo - importe;
+
+
+    // Actualizamos el monto de la cuenta contable si es necesario
+    if (suficiente) {
+      actualizarMontoFondo(partida, diferencia);
+    }
+    ///------------------------------------------------------
+
     return { suficiente, diferencia };
   };
 
