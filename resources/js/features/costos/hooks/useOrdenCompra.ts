@@ -96,9 +96,18 @@ export const useOrdenCompra = () => {
   };
 
   const verificarPresupuesto = (partida: string, importe: number) => {
+    console.log('Tipo de partida:', typeof partida, 'Valor:', partida);
+    console.log('Tipo de importe:', typeof importe, 'Valor:', importe);
+    // console.log('cuentaContablesData:', cuentaContablesData);
+
     const row = cuentaContablesData.find((o: any) => o.partida === partida);
 
-    const fondo = Number(row?.fondo )|| 0;
+    if (!row) {
+      console.log('No se encontró la partida:', partida);
+      return { suficiente: false, diferencia: 0 };
+    }
+
+    const fondo = Number(row?.fondo) || 0;
     const suficiente = fondo >= importe;
     const diferencia = fondo - importe;
     return { suficiente, diferencia };

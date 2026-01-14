@@ -24,7 +24,7 @@ export default function OrdenCompraForm() {
     articulosData,
     categoriasData,
     proveedorsData,
-    cuentaContablesData,
+    // cuentaContablesData,
     verificarPresupuesto,
     toggleSection,
     handleChange,
@@ -46,10 +46,9 @@ export default function OrdenCompraForm() {
 
   const handlePresupuesto = (paratida: string) => {
 
-    // Extract numeric part from partida string (e.g. "1234 - compra por fera del estado" -> "1234")
+    // Extrae la parte numérica del string de partida (por ejemplo, "1234 - compra por fera del estado" -> "1234")
     const partidaNumber = paratida.split(' ')[0];
     const { suficiente, diferencia } = verificarPresupuesto(partidaNumber, Number(formData.importe));
-    console.log(partidaNumber, formData.importe, suficiente, diferencia);
     return suficiente ? 'ACEPTADO' : 'DENEGADO';
   };
 
@@ -259,40 +258,30 @@ export default function OrdenCompraForm() {
                         ?.centrosCosto.find((cc) =>
                           formData.centroCosto.startsWith(cc.ccosto)
                         )
-                        ?.cuentas.map((c: any) => (
-                          // CAMBIO 5: Key única estable
-                          <option key={c.id || c.partida} value={`${c.partida} - ${c.desc_contable}`} />
-                        )) ?? []}
+                        ?.cuentas.map((c: any) => {
+                          // Extract partida number and update formData.cuentaContable
+                          const partidaNumber = formData.partida.split(' ')[0];
+                          if (c.partida === partidaNumber) {
+                            handleChange("cuentaContable", c.ccontable || '');
+                          }
+                          return (
+                            // CAMBIO 5: Key única estable
+                            <option key={c.id || c.partida} value={`${c.partida} - ${c.desc_contable}`} />
+                          );
+                        }) ?? []}
                     </datalist>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <LabelPresupuesto label="Presupuesto" value={handlePresupuesto(formData.partida)} />
                     <div className="mb-4">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Cuenta Contable</label>
-                      <input
-                        list="cuenta-contable-list"
-                        value={formData.cuentaContable}
-                        onChange={(e) => handleChange("cuentaContable", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-                      />
-                      <datalist id="cuenta-contable-list">
-                        {partidasData
-                          .find((g) => g.gerencia === formData.gerencia)
-                          ?.centrosCosto.find((cc) =>
-                            formData.centroCosto.startsWith(cc.ccosto)
-                          )
-                          ?.cuentas.map((c: any) => (
-                            // CAMBIO 6: Key única estable
-                            <option key={c.id || c.ccontable} value={c.ccontable} />
-                          )) ?? []}
-                      </datalist>
+                      <LabelField label="Cuenta Contable" value={formData.cuentaContable}  />
                     </div>
                   </div>
                 </div>
               )}
             </div>
-
+              
             {/* Botones de Acción */}
             <div className="flex gap-4">
               <button

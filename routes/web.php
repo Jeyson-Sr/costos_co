@@ -15,7 +15,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('presupuestos');
+        return Inertia::render('costos');
     })->name('dashboard');
     Route::get('costos', function () {
         return Inertia::render('costos');
